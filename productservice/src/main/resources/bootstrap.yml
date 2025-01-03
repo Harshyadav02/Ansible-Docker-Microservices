@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: product-service # Make sure this matches the config file in Config Server repository
+  cloud:
+    config:
+      uri: http://config-server:8888  # Config Server URL
+      fail-fast: true  # Optional: Fail startup if Config Server is not reachable

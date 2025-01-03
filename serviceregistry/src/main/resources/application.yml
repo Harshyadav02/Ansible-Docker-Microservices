@@ -1,0 +1,21 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: service-registry
+
+eureka:
+  client:
+    registerWithEureka: false  # This prevents the server from registering itself with Eureka
+    fetchRegistry: false      # The Eureka server doesn't need to fetch the registry from any other Eureka server
+  server:  
+    waitTimeInMsWhenSyncEmpty: 0  # This is a tuning parameter; it speeds up syncing in case no services are registered
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

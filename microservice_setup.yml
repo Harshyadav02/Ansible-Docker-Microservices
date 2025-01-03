@@ -1,0 +1,40 @@
+---
+- name: Deployment of microservice on remote server
+  hosts: 172.17.0.2
+  become: true
+    
+  tasks:
+    - name: Installation of Docker on remote Ubuntu
+      apt:  
+        name: docker.io
+        state: present
+        update_cache: yes
+
+    - name: Installation of Docker Compose on remote Ubuntu
+      shell: |
+        curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        chmod +x /usr/local/bin/docker-compose
+
+    - name: Pull microservice images from Docker Hub
+      shell: |
+        docker pull harshyadav02/service-registry:latest
+        docker pull harshyadav02/config-server:latest
+        docker pull harshyadav02/gatway:latest
+        docker pull harshyadav02/user-service:latest
+        docker pull harshyadav02/product-service:latest
+        docker pull harshyadav02/order-service:latest
+
+    - name: Create network for microservices
+      shell: docker network create micro-net
+
+    - name: Copy docker-compose.yml to remote server
+      copy:
+        src:  /home/harsh/Desktop/e-com/docker-compose.yml
+        dest: /root/docker-compose.yml
+        mode: '0644'
+
+    - name: Run Docker Compose
+      shell: |
+        cd /home/{{ ansible_user }}
+        docker-compose up -d
+

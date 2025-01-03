@@ -1,0 +1,115 @@
+version: '3.8'
+services:
+  mysqldb:
+    image: mysql:latest
+    container_name: mysqldb
+    environment:
+      - MYSQL_ROOT_PASSWORD=Harsh@123
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+    networks:
+      - micro-db
+
+  service-registry:
+    container_name: service-registry
+    image: harshyadav02/service-registry:latest
+    ports:
+      - 8761:8761
+    networks:
+      - micro-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+
+  config-server:
+    container_name: config-server
+    image: harshyadav02/config-server:latest
+    ports:
+      - 8888:8888
+    networks:
+      - micro-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/actuator/health"]
+      interval: 20s
+      retries: 10
+    depends_on:
+      service-registry:
+        condition: service_healthy
+
+  gatway:
+    container_name: gatway
+    image: harshyadav02/gatway:latest
+    ports:
+      - 8080:8080
+    networks:
+      - micro-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 20s
+      retries: 5
+      start_period: 30s
+    depends_on:
+      config-server:
+        condition: service_healthy
+      service-registry:
+        condition: service_healthy
+
+  user-service:
+    container_name: user-service
+    image: harshyadav02/user-service:latest
+    ports:
+      - 8083:8083
+    networks:
+      - micro-net
+      - micro-db
+    environment:
+      - MYSQL_DATABASE=userdb
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+      gatway:
+        condition: service_healthy
+
+  product-service:
+    container_name: product-service
+    image: harshyadav02/product-service:latest
+    ports:
+      - 8081:8081
+    networks:
+      - micro-net
+      - micro-db
+    environment:
+      - MYSQL_DATABASE=productdb
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+      gatway:
+        condition: service_healthy
+
+  order-service:
+    container_name: order-service
+    image: harshyadav02/order-service:latest
+    ports:
+      - 8082:8082
+    networks:
+      - micro-net
+      - micro-db
+    environment:
+      - MYSQL_DATABASE=orderdb
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+      gatway:
+        condition: service_healthy
+
+networks:
+  micro-net:
+  micro-db: 

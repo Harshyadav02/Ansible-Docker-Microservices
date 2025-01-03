@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "resilience4j.circuitbreaker.instances.user-service.sliding-window-size",
+    "type": "java.lang.String",
+    "description": "A description for 'resilience4j.circuitbreaker.instances.user-service.sliding-window-size'"
+  },
+  {
+    "name": "management.endpoints.web.exposure.include",
+    "type": "java.lang.String",
+    "description": "A description for 'management.endpoints.web.exposure.include'"
+  }
+]}

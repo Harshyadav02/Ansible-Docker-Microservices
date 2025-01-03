@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "product.service.url",
+    "type": "java.lang.String",
+    "description": "url for product service'"
+  },
+  {
+    "name": "feign.hystrix.enabled",
+    "type": "java.lang.String",
+    "description": "A description for 'feign.hystrix.enabled'"
+  }
+]}

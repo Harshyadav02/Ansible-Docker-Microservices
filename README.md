@@ -17,7 +17,7 @@ This project implements a microservices-based  system with the following core se
 The application follows a microservices architecture pattern with:
 - Spring Cloud for service discovery and configuration
 - API Gateway for request routing
-- Inter-service communication through REST APIs
+- Inter-service communication through Feign client
 - Containerization using Docker
 - Infrastructure as code using Ansible
 

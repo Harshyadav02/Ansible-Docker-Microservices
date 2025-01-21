@@ -1,11 +1,18 @@
-FROM openjdk:21
+FROM maven:3.9.2-eclipse-temurin-17-alpine as build
 
 WORKDIR /configserver
 
 COPY . /configserver/
 
-EXPOSE 8888
-
 RUN ./mvnw clean package -DskipTests
 
-CMD [ "java", "-jar" , "target/configserver-0.0.1-SNAPSHOT.jar" ]
+# Multi stage build
+FROM openjdk:21-jdk
+
+WORKDIR /configserver
+
+EXPOSE 8888
+
+COPY --from=build /configserver/target/configserver-0.0.1-SNAPSHOT.jar configserver.jar
+
+CMD ["java", "-jar", "configserver.jar"]

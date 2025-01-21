@@ -1,11 +1,11 @@
-FROM openjdk:21
-
+FROM maven:3.9.2-eclipse-temurin-17-alpine as build
 WORKDIR /userservice
-
 COPY . /userservice/
-
-EXPOSE 8083
-
 RUN ./mvnw clean package -DskipTests
 
-CMD [ "java" ,"-jar" , "target/userservice-0.0.1-SNAPSHOT.jar"]
+
+FROM openjdk:21
+WORKDIR /userservice
+COPY --from=build /userservice/target/userservice-0.0.1-SNAPSHOT.jar userservice.jar
+EXPOSE 8083
+CMD [ "java" ,"-jar" , "userservice.jar"]

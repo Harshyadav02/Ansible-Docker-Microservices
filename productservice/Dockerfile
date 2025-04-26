@@ -1,4 +1,4 @@
-FROM maven:3.9.2-eclipse-temurin-17-alpine as build
+FROM eclipse-temurin:21-jdk as build
 WORKDIR /productservice
 COPY . /productservice/
 RUN ./mvnw clean package -DskipTests

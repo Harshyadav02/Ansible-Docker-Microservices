@@ -1,5 +1,7 @@
 version: '3.8'
 services:
+
+  # For mysql database setup
   mysqldb:
     image: mysql:latest
     container_name: mysqldb
@@ -12,9 +14,13 @@ services:
     networks:
       - micro-db
 
+  # for service registry
   service-registry:
     container_name: service-registry
-    image: harshyadav02/service-registry:latest
+    # image: harshyadav02/service-registry:latest
+    build:
+      context: ./serviceregistry
+      dockerfile: Dockerfile
     ports:
       - 8761:8761
     networks:
@@ -29,9 +35,14 @@ services:
       mysqldb:
         condition: service_healthy
 
+
+  # for config server
   config-server:
     container_name: config-server
-    image: harshyadav02/config-server:latest
+    # image: harshyadav02/config-server:latest
+    build:
+      context: ./configserver
+      dockerfile: Dockerfile
     ports:
       - 8888:8888
     networks:
@@ -44,9 +55,13 @@ services:
       service-registry:
         condition: service_healthy
 
+  # for gatway server
   gatway:
     container_name: gatway
-    image: harshyadav02/gatway:latest
+    # image: harshyadav02/gatway:latest
+    build:
+      context: ./gatway
+      dockerfile: Dockerfile
     ports:
       - 8080:8080
     networks:
@@ -62,9 +77,13 @@ services:
       service-registry:
         condition: service_healthy
 
+  # for user service
   user-service:
     container_name: user-service
-    image: harshyadav02/user-service:latest
+    build:
+      context: ./userservice
+      dockerfile: Dockerfile
+    # image: harshyadav02/user-service:latest
     ports:
       - 8083:8083
     networks:
@@ -77,10 +96,13 @@ services:
         condition: service_healthy
       gatway:
         condition: service_healthy
-
+  # for project service
   product-service:
     container_name: product-service
-    image: harshyadav02/product-service:latest
+    build:
+      context: ./productservice
+      dockerfile: Dockerfile
+    # image: harshyadav02/product-service:latest
     ports:
       - 8081:8081
     networks:
@@ -93,10 +115,13 @@ services:
         condition: service_healthy
       gatway:
         condition: service_healthy
-
+  # for order service
   order-service:
     container_name: order-service
-    image: harshyadav02/order-service:latest
+    build:
+      context: ./orderservice
+      dockerfile: Dockerfile
+    # image: harshyadav02/order-service:latest
     ports:
       - 8082:8082
     networks:
